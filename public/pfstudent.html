@@ -40,10 +40,28 @@
                 <p><strong>Sex:</strong> <span id="studentSex"></span></p>
                 <p><strong>Year of Study:</strong> <span id="studentYearOfStudy"></span></p>
             </div>
-        </div>
 
-        <!-- Container สำหรับแสดงโพสต์ทั้งหมด -->
-        <div id="post-container"></div>
+            <!-- Container สำหรับแสดงโพสต์ทั้งหมด -->
+            <div id="post-container"></div>
+
+            <!-- Container สำหรับฟอร์มแก้ไขโพสต์ -->
+            <div id="edit-post-container" style="display: none;">
+                <h3>Edit Post</h3>
+                <form id="edit-post-form">
+                    <label for="edit-St_skill">Skill:</label>
+                    <input type="text" id="edit-St_skill" name="St_skill" required>
+
+                    <label for="edit-St_ability">Ability:</label>
+                    <input type="text" id="edit-St_ability" name="St_ability" required>
+
+                    <label for="edit-St_work_time">Work Time:</label>
+                    <input type="text" id="edit-St_work_time" name="St_work_time" required>
+
+                    <input type="hidden" id="edit-post-id">
+                    <button type="button" onclick="updatePost()">Update Post</button>
+                </form>
+            </div>
+        </div>
     </main>
 
     <script>
@@ -67,13 +85,12 @@
         // ฟังก์ชันเรียกข้อมูลโพสต์ทั้งหมดจากเซิร์ฟเวอร์
         async function fetchPosts() {
             try {
-                const response = await fetch('http://localhost:3005/api/postStu'); // ดึงข้อมูลโพสต์จาก API
+                const response = await fetch('http://localhost:3005/api/postStu');
                 const posts = await response.json();
 
                 const postContainer = document.getElementById('post-container');
-                postContainer.innerHTML = ''; // เคลียร์ container ก่อนแสดงโพสต์ใหม่
+                postContainer.innerHTML = '';
 
-                // ลูปแสดงโพสต์ทั้งหมด
                 posts.forEach(post => {
                     const postElement = document.createElement('div');
                     postElement.classList.add('post-box');
@@ -81,14 +98,13 @@
                         <div class="post-header">
                             <h3>Post Details</h3>
                             <div class="post-actions">
-                                <button onclick="editPost('${post.id}')" class="edit-btn"><i class="fas fa-edit"></i></button>
-                                <button onclick="deletePost('${post.id}')" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                                <button onclick="editPost('${post._id}')" class="edit-btn"><i class="fas fa-edit"></i></button>
+                                <button onclick="deletePost('${post._id}')" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
                         <p><strong>Skill:</strong> ${post.St_skill}</p>
                         <p><strong>Ability:</strong> ${post.St_ability}</p>
                         <p><strong>Worktime:</strong> ${post.St_work_time}</p>
-                        <span id="postId" style="display:none;">${post.id}</span>
                     `;
                     postContainer.appendChild(postElement);
                 });
@@ -101,34 +117,52 @@
 
         // ฟังก์ชันแก้ไขโพสต์
         async function editPost(postId) {
-            const updatedSkill = prompt("Enter new Skill:");
-            const updatedAbility = prompt("Enter new Ability:");
-            const updatedWorktime = prompt("Enter new Worktime:");
+            try {
+                const response = await fetch(`http://localhost:3005/api/postStu/${postId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const post = await response.json();
+
+                document.getElementById('edit-post-id').value = post._id;
+                document.getElementById('edit-St_skill').value = post.St_skill;
+                document.getElementById('edit-St_ability').value = post.St_ability;
+                document.getElementById('edit-St_work_time').value = post.St_work_time;
+                document.getElementById('edit-post-container').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error fetching post for edit:', error);
+                alert('ไม่สามารถดึงข้อมูลโพสต์ได้');
+            }
+        }
+
+        // ฟังก์ชันอัปเดตโพสต์
+        async function updatePost() {
+            const postId = document.getElementById('edit-post-id').value;
+            const St_skill = document.getElementById('edit-St_skill').value;
+            const St_ability = document.getElementById('edit-St_ability').value;
+            const St_work_time = document.getElementById('edit-St_work_time').value;
 
             try {
-                const response = await fetch(`http://localhost:3005/api/postStu/edit`, {
-                    method: 'POST',
+                const response = await fetch(`http://localhost:3005/api/postStu/update/${postId}`, {
+                    method: 'PUT',
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({
-                        id: postId,
-                        St_skill: updatedSkill,
-                        St_ability: updatedAbility,
-                        St_work_time: updatedWorktime
-                    }),
+                    body: JSON.stringify({ St_skill, St_ability, St_work_time }),
                 });
 
                 if (!response.ok) {
                     throw new Error('Error updating post');
                 }
 
-                alert('โพสต์ถูกแก้ไขแล้ว');
+                alert('โพสต์ถูกอัปเดตแล้ว');
+                document.getElementById('edit-post-container').style.display = 'none';
                 fetchPosts(); // โหลดโพสต์ใหม่อีกครั้ง
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('ไม่สามารถแก้ไขโพสต์ได้');
+                alert('ไม่สามารถอัปเดตโพสต์ได้');
             }
         }
 
@@ -136,14 +170,11 @@
         async function deletePost(postId) {
             if (confirm("คุณต้องการลบโพสต์นี้ใช่หรือไม่?")) {
                 try {
-                    const response = await fetch(`http://localhost:3005/api/postStu/delete`, {
-                        method: 'POST',
+                    const response = await fetch(`http://localhost:3005/api/postStu/delete/${postId}`, {
+                        method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({
-                            id: postId
-                        }),
                     });
 
                     if (!response.ok) {

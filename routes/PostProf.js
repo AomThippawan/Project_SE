@@ -10,5 +10,6 @@ router.post("/", async (req,res) => {
 router.post("/post",postPostProf);
 router.put("/update/:id",editPostProf);
 router.delete("/delete/:id",deletePostProf);
+
 router.get("/",getPostProf);
 module.exports = router;
