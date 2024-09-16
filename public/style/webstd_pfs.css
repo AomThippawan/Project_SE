@@ -1,0 +1,136 @@
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #bbdefa; /* เปลี่ยนสีพื้นหลังตามที่ต้องการ */
+    border-bottom: 1px solid #ccc;
+}
+
+.logo img {
+    height: 50px; /* ขนาดโลโก้ */
+}
+.account-icon {
+    padding: 10px; /* เพิ่มระยะห่างภายใน */
+}
+
+.account-icon a {
+    font-size: 30px; /* ขนาดไอคอน */
+    color: #ffffff; /* สีไอคอน */
+    text-decoration: none; /* ไม่มีขีดเส้นใต้ */
+    margin: 5px; /* เพิ่มระยะห่างภายนอก */
+}
+
+.account-icon a:hover {
+    color: #23617e; /* เปลี่ยนสีเมื่อวางเมาส์ */
+}
+
+.container {
+    display: flex;
+    padding: 20px;
+}
+
+.main-content {
+    flex: 1;
+    margin-right: 20px;
+    /* overflow-y: auto; */
+}
+
+.post-box {
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+
+}
+
+textarea {
+    width: 97%;
+    padding: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+}
+
+.post-button {
+    background-color: #4fc3f7;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.post-button:hover {
+    background-color: #0288d1;
+}
+
+.filter-section {
+    width: 300px;
+    font-size: 18px;
+}
+
+.filter-section select {
+    width: 100%;
+    padding: 15px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-bottom: 20px;
+    font-size: 16px;
+}
+
+/* เพิ่มสไตล์ปุ่มสมัคร */
+.post-button {
+    background-color: #81b4dd;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px; /* เพิ่มระยะห่างด้านบนของปุ่ม */
+}
+
+.post-button:hover {
+    background-color: #487288;
+}
+
+
+.post-item {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.post-box {
+    position: relative;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+.post-box-header {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: #f1f1f1;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    padding: 5px;
+    font-size: 12px;
+    color: #333;
+    z-index: 1;
+}
+
+.post-box-header p {
+    margin: 0;
+    text-align: center;
+}

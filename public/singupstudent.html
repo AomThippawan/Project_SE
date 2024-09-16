@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Student Account</title>
+  <link rel="stylesheet" href="style/signupstd_pfs.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="background">
+      <img src="assets/thaksinlogo.jpg" alt="background">
+    </div>
+    <div class="form-container">
+      <form id="createAccountForm">
+        <h1>CREATE ACCOUNT !</h1>
+
+        <div class="input-group">
+          <input type="text" id="Name" placeholder="ชื่อ-นามสกุล" required>
+        </div>
+
+        <div class="input-group">
+          <input type="text" id="Username" placeholder="ชื่อผู้ใช่" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="Password" placeholder="รหัสผ่าน" required>
+        </div>
+
+        <div class="input-group">
+          <input type="email" id="Email" placeholder="email@tsu.ac.th" required>
+        </div>
+
+        <div class="input-group">
+          <input type="tel" id="Phone" placeholder="เบอร์โทรศัพท์" required>
+        </div>
+
+        <div class="input-group">
+          <select id="faculty" onchange="populateMajors()">
+            <option value="">เลือกคณะ</option>
+            <option value="คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล">คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล</option>
+            <option value="คณะวิทยาการสุขภาพและการกีฬา">คณะวิทยาการสุขภาพและการกีฬา</option>
+            <option value="คณะเทคโนโลยีและการพัฒนาชุมชน">คณะเทคโนโลยีและการพัฒนาชุมชน</option>
+            <option value="คณะวิศวกรรมศาสตร์">คณะวิศวกรรมศาสตร์</option>
+            <option value="คณะพยาบาลศาสตร์">คณะพยาบาลศาสตร์</option>
+            <option value="คณะนิติศาสตร์">คณะนิติศาสตร์</option>
+            <option value="คณะอุตสาหกรรมเกษตรและชีวภาพ">คณะอุตสาหกรรมเกษตรและชีวภาพ</option>
+            <option value="คณะศึกษาศาสตร์">คณะศึกษาศาสตร์</option>
+            <option value="คณะสหวิทยาการและการประกอบการ">คณะสหวิทยาการและการประกอบการ</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <select id="majors">
+            <option value="">เลือกสาขา</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <select id="Sex" required>
+            <option value="">เลือกเพศ</option>
+            <option value="Male">ชาย</option>
+            <option value="Female">หญิง</option>
+            <option value="Other">อื่น ๆ</option>
+          </select>
+        </div>
+
+        <div class="input-group">
+          <input type="number" id="Year_of_study" placeholder="ปีการศึกษา" min="1" required>
+        </div>
+
+        <div class="button-group">
+          <button type="button" onclick="goBack()">ย้อนกลับ</button>
+          <button type="submit">ต่อไป</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const majors = {
+      'คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล': [
+        'สาขาคณิตศาสตร์และสถิติ',
+        'สาขาเคมี',
+        'สาขาชีววิทยา',
+        'สาขาฟิสิกส์',
+        'สาขาเทคโนโลยีสารสนเทศ',
+        'สาขาวิทยาการคอมพิวเตอร์',
+        'สาขาวิทยาการคอมพิวเตอร์และสารสนเทศ',
+        'สาขาวิทยาศาสตร์ชีวภาพและสิ่งแวดล้อม',
+        'สาขาวิทยาศาสตร์และคณิตศาสตร์พื้นฐาน'
+      ],
+      'คณะวิทยาการสุขภาพและการกีฬา': [
+        'สาขาสาธารณสุขชุมชน',
+        'สาขาวิทยาศาสตร์การกีฬา',
+        'สาขาอาชีวอนามัยและความปลอดภัย',
+        'สาขาการแพทย์แผนไทย'
+      ],
+      'คณะเทคโนโลยีและการพัฒนาชุมชน': [
+        'สาขาเทคโนโลยีและนวัตกรรมการผลิตพืช',
+        'สาขาส่งเสริมการเกษตรและพัฒนาชุมชน',
+        'สาขาสัตวศาสตร์'
+      ],
+      'คณะวิศวกรรมศาสตร์': [
+        'สาขาวิศวกรรมเมคคาทรอนิกส์',
+        'สาขาวิศวกรรมยางและพอลิเมอร์',
+        'สาขาวิศวกรรมเครื่องกล'
+      ],
+      'คณะพยาบาลศาสตร์': [
+        '-',
+      ],
+      'คณะนิติศาสตร์': [
+        '-',
+      ],
+      'คณะอุตสาหกรรมเกษตรและชีวภาพ': [
+        'สาขาวิทยาศาสตร์และเทคโนโลยีอาหาร ',
+        'สาขาวิทยาศาสตร์อาหารและโภชนาการ ',
+        'สาขาเทคโนโลยีเครื่องสำอางและผลิตภัณฑ์เสริมอาหาร',
+        'สาขาเทคโนโลยีเครื่องสำอางและผลิตภัณฑ์เสริมอาหาร '
+      ],
+      'คณะศึกษาศาสตร์': [
+        'สาขาการวัดและประเมินทางการศึกษา',
+        'สาขาการศึกษา วิชาเอกการประถมศึกษา',
+        'สาขาการศึกษา วิชาเอกการศึกษาปฐมวัย',
+        'สาขาการศึกษา วิชาเอกจิตวิทยาการศึกษาและการแนะแนว',
+        'สาขาการศึกษา วิชาเอกเทคโนโลยีและสื่อสารการศึกษา',
+        'สาขาคณิตศาสตร์',
+        'สาขาชีววิทยา',
+        'สาขาพลศึกษา',
+        'สาขาฟิสิกส์',
+        'สาขาภาษาอังกฤษ',
+        'สาขาภาษาไทย',
+        'สาขาศิลปศึกษา',
+        'สาขาสังคมศึกษา',
+        'สาขาเคมี',
+        'สาขาเทคโนโลยีและสื่อสารการศึกษา'
+      ],
+      'คณะสหวิทยาการและการประกอบการ': [
+        'วิชาภาษาอังกฤษเพื่อการสื่อสารเชิงประกอบการ'
+      ]
+    };
+
+    function populateMajors() {
+      const facultySelect = document.getElementById('faculty');
+      const majorSelect = document.getElementById('majors');
+      const selectedFaculty = facultySelect.value;
+
+      majorSelect.innerHTML = '<option value="">เลือกสาขา</option>'; // Clear previous options
+      if (majors[selectedFaculty]) {
+        majors[selectedFaculty].forEach(major => {
+          const option = document.createElement('option');
+          option.value = major;
+          option.textContent = major;
+          majorSelect.appendChild(option);
+        });
+      }
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    document.getElementById('createAccountForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const Name = document.getElementById('Name').value;
+      const Email = document.getElementById('Email').value;
+      const Username = document.getElementById('Username').value;
+      const Password = document.getElementById('Password').value;
+      const Phone = document.getElementById('Phone').value;
+      const Faculty = document.getElementById('faculty').value;
+      const Major = document.getElementById('majors').value;
+      const Sex = document.getElementById('Sex').value;
+      const Year_of_study = document.getElementById('Year_of_study').value;
+
+      if (Name && Username && Password && Email && Phone && Faculty && Major && Sex && Year_of_study) {
+        try {
+          const response = await fetch('http://localhost:3005/api/stu/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              Name,
+              Username,
+              Password,
+              Email,
+              Phone,
+              Faculty,
+              Program: Major,
+              Sex,
+              Year_of_study
+            }),
+          });
+
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Server Error:', errorText);
+            alert('Error registering user: ' + errorText);
+          } else {
+            const data = await response.json();
+            // Save user data to localStorage
+            localStorage.setItem('Name', Name);
+            localStorage.setItem('Email', Email);
+            localStorage.setItem('Phone', Phone);
+            localStorage.setItem('Faculty', Faculty);
+            localStorage.setItem('Program', Major);
+            localStorage.setItem('Sex', Sex);
+            localStorage.setItem('Year_of_study', Year_of_study);
+            localStorage.setItem('StdId', data.StdId);  // เก็บ StdId ที่ได้จาก MongoDB
+            alert('User registered successfully!');
+            window.location.href = 'webstudent.html'; // Redirect on success
+          }
+        } catch (error) {
+          console.error('Fetch Error:', error);
+          alert('Error: ' + error.message);
+        }
+      } else {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+      }
+    });
+  </script>
+</body>
+
+</html>

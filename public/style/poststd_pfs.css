@@ -1,0 +1,123 @@
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: Arial, sans-serif;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #bbdefa;
+    /* เปลี่ยนสีพื้นหลังตามที่ต้องการ */
+    border-bottom: 1px solid #ffffff;
+}
+
+.logo img {
+    height: 50px;
+    /* ขนาดโลโก้ */
+}
+
+.account-icon {
+    padding: 10px;
+    /* เพิ่มระยะห่างภายใน */
+}
+
+.account-icon a {
+    font-size: 30px;
+    /* ขนาดไอคอน */
+    color: #ffffff;
+    /* สีไอคอน */
+    text-decoration: none;
+    /* ไม่มีขีดเส้นใต้ */
+    margin: 5px;
+    /* เพิ่มระยะห่างภายนอก */
+}
+
+.account-icon a:hover {
+    color: #23617e;
+    /* เปลี่ยนสีเมื่อวางเมาส์ */
+}
+
+.main-content {
+    padding: 20px;
+}
+
+.post-form {
+    background-color: #ffffff;
+    border-radius: 8px;
+    width: 700px;
+    /* ขยายความกว้างของกล่อง */
+    margin: 20px auto;
+    padding: 30px;
+    /* เพิ่ม Padding ให้มากขึ้น */
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    /* เพิ่มเงาให้เด่นขึ้น */
+}
+
+.post-form h2 {
+    margin-top: 0;
+    font-size: 28px;
+    /* เพิ่มขนาดตัวอักษรของหัวข้อ */
+    color: #333;
+    text-align: center;
+    /* จัดให้อยู่กึ่งกลาง */
+}
+
+.form-group {
+    margin-bottom: 20px;
+    /* เพิ่มระยะห่างระหว่างกลุ่มของฟอร์ม */
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 10px;
+    /* เพิ่มระยะห่างระหว่าง label และ input */
+    color: #333;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%; /* กว้างเท่ากับกล่องฟอร์ม */
+    padding: 15px; /* ขนาด padding */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    box-sizing: border-box; /* รวม padding และ border ในความกว้าง */
+    font-size: 16px; /* ขนาดตัวอักษร */
+}
+
+.form-group textarea {
+    height: 100px; /* ความสูงของ textarea */
+    resize: none; /* อนุญาตให้ปรับขนาดเฉพาะแนวตั้ง */
+}
+
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    /* จัดปุ่มให้ห่างกัน */
+    margin-top: 20px;
+}
+
+button {
+    background-color: #81b4dd;
+    color: white;
+    padding: 15px 30px;
+    /* เพิ่มขนาดปุ่ม */
+    font-size: 18px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-align: center;
+}
+
+button:hover {
+    background-color: #487288;
+}

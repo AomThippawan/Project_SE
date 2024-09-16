@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าโพสต์</title>
+    <link rel="stylesheet" href="/public/style/webstd_pfs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <!-- แถบด้านบน -->
+    <header class="header">
+        <div class="logo">
+            <a href="/public/webstudent.html">
+                <img src="assets/logo.jpg" alt="logo" class="profile-picture">
+            </a>
+        </div>
+        <div class="account-icon">
+            <a href="/public/pfstudent.html">
+                <i class="fas fa-user-circle"></i> <!-- ใช้ไอคอนที่ต้องการ -->
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- คอนเทนต์หลัก -->
+        <main class="main-content">
+            <!-- กล่องโพสต์คล้ายเฟสบุ๊ค -->
+            <div class="post-box" id="create-post-box">
+                <textarea rows="4" placeholder="โพสต์..."></textarea>
+            </div>
+
+            <!-- เพิ่มส่วนที่แสดงโพสต์ทั้งหมด -->
+            <div id="posts-container"></div> <!-- Container สำหรับโพสต์ -->
+        </main>
+
+        <!-- การกรองโพสต์ -->
+        <aside class="filter-section">
+            <h3>การกรองโพสต์</h3>
+            <select id="filter-faculty">
+                <option value="">เลือกคณะ</option>
+                <option value="คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล">คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล</option>
+                <option value="คณะวิทยาการสุขภาพและการกีฬา">คณะวิทยาการสุขภาพและการกีฬา</option>
+                <option value="คณะเทคโนโลยีและการพัฒนาชุมชน">คณะเทคโนโลยีและการพัฒนาชุมชน</option>
+                <option value="คณะวิศวกรรมศาสตร์">คณะวิศวกรรมศาสตร์</option>
+                <option value="คณะพยาบาลศาสตร์">คณะพยาบาลศาสตร์</option>
+                <option value="คณะนิติศาสตร์">คณะนิติศาสตร์</option>
+                <option value="คณะอุตสาหกรรมเกษตรและชีวภาพ">คณะอุตสาหกรรมเกษตรและชีวภาพ</option>
+                <option value="คณะศึกษาศาสตร์">คณะศึกษาศาสตร์</option>
+                <option value="คณะสหวิทยาการและการประกอบการ">คณะสหวิทยาการและการประกอบการ</option>
+            </select>
+
+            <select id="filter-major">
+                <option value="">เลือกสาขา</option>
+                <!-- สาขาจะถูกเพิ่มโดย JavaScript -->
+            </select>
+
+            <!-- <select id="filter-agency">
+                <option value="">เลือกหน่วยงาน</option>
+                <option value="หน่วยงานอิสระ">หน่วยงานอิสระ</option>
+                <option value="สำนักงานสภามหาวิทยาลัย">สำนักงานสภามหาวิทยาลัย</option>
+                <option value="สำนักงานมหาวิทยาลัย">สำนักงานมหาวิทยาลัย</option>
+                <option value="สำนักงานวิทยาเขต">สำนักงานวิทยาเขต</option>
+                <option value="ส่วนงานอื่นๆ">ส่วนงานอื่นๆ</option>
+                <option value="องค์กร/โครงการ/กิจกรรม">องค์กร/โครงการ/กิจกรรม</option>
+                <option value="เว็บไซต์หน่วยงานเดิม">เว็บไซต์หน่วยงานเดิม</option>
+            </select> -->
+        </aside>
+    </div>
+    <script src="scriptss.js"></script> <!-- ใส่ path ที่ถูกต้องสำหรับไฟล์ JavaScript -->
+    <script>
+        async function fetchPosts() {
+            try {
+                const response = await fetch('http://localhost:3005/api/postProf');
+                if (!response.ok) {
+                    throw new Error('Error fetching posts');
+                }
+                const posts = await response.json();
+                const postsContainer = document.getElementById('posts-container');
+
+                postsContainer.innerHTML = '';
+
+                const studentName = localStorage.getItem('Name');
+                const studentEmail = localStorage.getItem('Email');
+
+                posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.className = 'post-item';
+
+                    postElement.innerHTML = `
+                        <div class="post-box">
+                            <div class="post-box-header">
+                                <p>${post.applyJob || 0} / ${post.Count}</p>
+                            </div>
+                            <h3>${post.Job_title}</h3>
+                            <p>${post.Job_description}</p>
+                            <div class="post-location">
+                                <p><strong>สถานที่:</strong> ${post.Job_location} ${post.Job_building ? ' อาคาร: ' + post.Job_building : ''} ${post.Job_room ? ' ห้อง: ' + post.Job_room : ''}</p>
+                            </div>
+                            <div class="post-time">
+                                <p><strong>เวลา:</strong> ${post.Job_time_start} - ${post.Job_time_end}</p>
+                            </div>
+                            <div class="post-salary">
+                                <p><strong>ค่าตอบแทน:</strong> ${post.Salary}</p>
+                            </div>
+                            <button class="post-button" onclick="apply('${post._id}')">สมัคร</button>
+                        </div>
+                    `;
+                    postsContainer.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+
+        async function apply(postId) {
+            const studentName = localStorage.getItem('Name'); // ใช้ข้อมูลของนิสิต
+            const studentEmail = localStorage.getItem('Email');
+
+            try {
+                const response = await fetch('http://localhost:3005/api/applyJob/apply', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ StudentName: studentName, StudentEmail: studentEmail, PostId: postId }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error applying for job');
+                }
+
+                const result = await response.json();
+                alert(result.message);
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Failed to apply for job');
+            }
+        }
+
+        window.onload = fetchPosts;
+    </script>
+
+</body>
+
+</html>

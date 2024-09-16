@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าโพสต์</title>
+    <link rel="stylesheet" href="/public/style/poststd_pfs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <!-- แถบด้านบน -->
+    <header class="header">
+        <div class="logo">
+            <a href="/public/webstudent.html">
+                <img src="/public/assets/logo.jpg" alt="logo" class="profile-picture">
+            </a>
+        </div>
+        <div class="account-icon">
+            <a href="pfstudent.html">
+                <i class="fas fa-user-circle"></i> <!-- ใช้ไอคอนที่ต้องการ -->
+            </a>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="post-form">
+            <h2>สร้างโพสต์ใหม่</h2>
+            <form id="postStudentForm">
+                <div class="form-group">
+                    <label for="skills">ทักษะ:</label>
+                    <input type="text" id="skills" name="skills" placeholder="ระบุทักษะของคุณ">
+                </div>
+                <div class="form-group">
+                    <label for="abilities">ความสามารถ:</label>
+                    <input type="text" id="abilities" name="abilities" placeholder="ระบุความสามารถของคุณ">
+                </div>
+                <div class="form-group">
+                    <label for="availability">เวลาที่ทำงานได้:</label>
+                    <input type="text" id="availability" name="availability" placeholder="ระบุเวลาที่คุณสามารถทำงานได้">
+                </div>
+                <div class="button-container">
+                    <button type="submit" class="submit-button">โพสต์</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // การส่งแบบฟอร์มโพสต์ข้อมูลไปยังเซิร์ฟเวอร์
+        // การส่งแบบฟอร์มโพสต์ข้อมูลไปยังเซิร์ฟเวอร์
+        document.getElementById('postStudentForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const skills = document.getElementById('skills').value.trim();
+            const abilities = document.getElementById('abilities').value.trim();
+            const availability = document.getElementById('availability').value.trim();
+
+            // การตรวจสอบข้อมูล
+            if (!skills || !abilities || !availability) {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            try {
+                const response = await fetch('http://localhost:3005/api/postStu/post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        St_skill: skills,
+                        St_ability: abilities,
+                        St_work_time: availability,
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Server Error:', errorText);
+                    alert('เกิดข้อผิดพลาดในการโพสต์: ' + errorText);
+                } else {
+                    localStorage.setItem('St_skill', skills);
+                    localStorage.setItem('St_ability', abilities);
+                    localStorage.setItem('St_work_time', availability);
+
+                    alert('โพสต์สำเร็จ!');
+                    window.location.href = '/public/webstudent.html'; // เปลี่ยนเส้นทางเมื่อสำเร็จ
+                }
+            } catch (error) {
+                console.error('Fetch Error:', error);
+                alert('Error: ' + error.message);
+            }
+        });
+    </script>
+</body>
+
+</html>

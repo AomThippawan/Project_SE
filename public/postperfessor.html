@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าโพสต์</title>
+    <link rel="stylesheet" href="/public/style/poststd_pfs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <!-- แถบด้านบน -->
+    <header class="header">
+        <div class="logo">
+            <a href="/public/webperfessor.html">
+                <img src="/public/assets/logo.jpg" alt="logo" class="profile-picture">
+            </a>
+        </div>
+        <div class="account-icon">
+            <a href="/public/pfperfessor.html">
+                <i class="fas fa-user-circle"></i> <!-- ไอคอนบัญชีผู้ใช้ -->
+            </a>
+        </div>
+    </header>
+
+    <!-- เนื้อหาหลัก -->
+    <main class="main-content">
+        <div class="post-form">
+            <h2>สร้างโพสต์ใหม่</h2>
+            <form id="postJobForm" action="#" method="POST">
+                <div class="form-group">
+                    <label for="Job_title">ชื่องาน</label>
+                    <input type="text" id="Job_title" name="Job_title" placeholder="ระบุชื่องาน" required>
+                </div>
+                <div class="form-group">
+                    <label for="Job_description">รายละเอียด</label>
+                    <textarea id="Job_description" name="Job_description" placeholder="ระบุรายละเอียดการทำงาน" required style="width: 598px;"></textarea>
+                </div>
+                <div class="form-group">
+                    <label for="Job_location">สถานที่</label>
+                    <input type="text" id="Job_location" name="Job_location" placeholder="ระบุสถานที่ทำงาน" required>
+                </div>
+                <div class="form-group">
+                    <label for="Job_building">อาคาร</label>
+                    <input type="text" id="Job_building" name="Job_building" placeholder="ระบุอาคารที่ทำงาน">
+                </div>
+                <div class="form-group">
+                    <label for="Job_room">ห้อง</label>
+                    <input type="text" id="Job_room" name="Job_room" placeholder="ระบุห้องที่ทำงาน">
+                </div>
+                <div class="form-group">
+                    <label for="Job_time_start">เวลาที่เริ่ม</label>
+                    <input type="time" id="Job_time_start" name="Job_time_start" placeholder="ระบุเวลาที่เริ่มทำงาน" required>
+                </div>
+                <div class="form-group">
+                    <label for="Job_time_end">เวลาที่สิ้นสุด</label>
+                    <input type="time" id="Job_time_end" name="Job_time_end" placeholder="ระบุเวลาที่สิ้นสุดการทำงาน" required>
+                </div>
+                <div class="form-group">
+                    <label for="Count">จำนวนที่รับ</label>
+                    <input type="number" id="Count" name="Count" placeholder="ระบุจำนวนที่รับ" required>
+                </div>
+                <div class="form-group">
+                    <label for="Reserve_count">จำนวนสำรอง</label>
+                    <input type="text" id="Reserve_count" name="Reserve_count" placeholder="ระบุจำนวนสำรองที่รับ">
+                </div>
+                <div class="form-group">
+                    <label>สวัสดิการ</label>
+                    <label for="Traveling_type">การเดินทาง</label>
+                    <input type="text" id="Traveling_type" name="Traveling_type" placeholder="ระบุการเดินทาง">
+                </div>
+                <div class="form-group">
+                    <label for="Food_Sup">อาหาร</label>
+                    <input type="text" id="Food_Sup" name="Food_Sup" placeholder="ระบุ เช่น มื้อเที่ยง">
+                </div>
+                <div class="form-group">
+                    <label for="Salary">ค่าตอบแทน</label>
+                    <input type="text" id="Salary" name="Salary" placeholder="ระบุจำนวน">
+                </div>
+                <div class="button-group">
+                    <button type="button" onclick="goBack()">ย้อนกลับ</button>
+                    <button type="submit">โพสต์</button>
+                </div>
+            </form>
+        </div>
+    </main>
+
+    <script>
+        // ฟังก์ชันสำหรับย้อนกลับไปหน้าที่แล้ว
+        function goBack() {
+            window.history.back();
+        }
+    
+        // การส่งแบบฟอร์มโพสต์งานไปยังเซิร์ฟเวอร์
+        document.getElementById('postJobForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+    
+            const Job_title = document.getElementById('Job_title').value;
+            const Job_description = document.getElementById('Job_description').value;
+            const Job_location = document.getElementById('Job_location').value;
+            const Job_building = document.getElementById('Job_building').value;
+            const Job_room = document.getElementById('Job_room').value;
+            const Job_time_start = document.getElementById('Job_time_start').value;
+            const Job_time_end = document.getElementById('Job_time_end').value;
+            const Count = document.getElementById('Count').value;
+            const Reserve_count = document.getElementById('Reserve_count').value;
+            const Traveling_type = document.getElementById('Traveling_type').value;
+            const Food_Sup = document.getElementById('Food_Sup').value;
+            const Salary = document.getElementById('Salary').value;
+    
+            // ตรวจสอบข้อมูลว่าครบถ้วนหรือไม่
+            if (Job_title && Job_description && Job_location && Job_time_start && Job_time_end && Count) {
+                try {
+                    const response = await fetch('http://localhost:3005/api/postProf/post', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            Job_title,
+                            Job_description,
+                            Job_location,
+                            Job_building,
+                            Job_room,
+                            Job_time_start,
+                            Job_time_end,
+                            Count,
+                            Reserve_count,
+                            Traveling_type,
+                            Food_Sup,
+                            Salary,
+                        }),
+                    });
+    
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('Server Error:', errorText);
+                        alert('เกิดข้อผิดพลาดในการโพสต์งาน: ' + errorText);
+                    } else {
+
+                        //local Storage
+                        localStorage.setItem('Job_title', Job_title);
+                        localStorage.setItem('Job_description', Job_description);
+                        localStorage.setItem('Job_location', Job_location);
+                        localStorage.setItem('Job_building', Job_building);
+                        localStorage.setItem('Job_room', Job_room);
+                        localStorage.setItem('Job_time_start', Job_time_start);
+                        localStorage.setItem('Job_time_end', Job_time_end);
+                        localStorage.setItem('Count', Count);
+                        localStorage.setItem('Reserve_count', Reserve_count);
+                        localStorage.setItem('Traveling_type', Traveling_type);
+                        localStorage.setItem('Food_Sup', Food_Sup);
+                        localStorage.setItem('Salary', Salary);
+                        
+                        alert('โพสต์งานสำเร็จ!');
+                        window.location.href = '/public/webperfessor.html'; // เปลี่ยนเส้นทางเมื่อสำเร็จ
+                    }
+                } catch (error) {
+                    console.error('Fetch Error:', error);
+                    alert('Error: ' + error.message);
+                }
+            } else {
+                alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+            }
+        });
+    </script>
+</body>
+
+</html>

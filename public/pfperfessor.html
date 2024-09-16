@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หน้าโพสต์</title>
+    <link rel="stylesheet" href="/public/style/pfstd_pfs.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* เพิ่ม CSS สำหรับเมนู */
+        .kebab-menu {
+            position: relative;
+            display: inline-block;
+        }
+
+        .menu-options {
+            display: none;
+            position: absolute;
+            top: 20px;
+            right: 0;
+            background-color: white;
+            box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-options li {
+            padding: 8px 16px;
+            cursor: pointer;
+        }
+
+        .menu-options li:hover {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- แถบด้านบน -->
+    <header class="header">
+        <div class="logo">
+            <a href="/public/webperfessor.html">
+                <img src="/public/assets/logo.jpg" alt="logo" class="profile-picture">
+            </a>
+        </div>
+        <div class="account-icon">
+            <a href="/public/pfperfessor.html">
+                <i class="fas fa-user-circle"></i> <!-- ใช้ไอคอนที่ต้องการ -->
+            </a>
+        </div>
+    </header>
+
+    <!-- Section to display user information -->
+    <main class="main-content">
+        <div class="student-name">
+            <h2>ข้อมูลผู้ใช้</h2>
+            <p><strong>ชื่อ-นามสกุล:</strong> <span id="displayProfName"></span></p>
+        </div>
+        <div class="info-container">
+            <div class="user-info">
+                <p><strong>Email:</strong> <span id="displayProfEmail"></span></p>
+                <p><strong>เบอร์โทรศัพท์:</strong> <span id="displayProfPhone"></span></p>
+                <p><strong>คณะ:</strong> <span id="displayProfFaculty"></span></p>
+            </div>
+            <div class="post-container">
+                <div class="post-box">
+                    <div class="post-header">
+                        <div class="kebab-menu">
+                            <i class="fas fa-ellipsis-v" onclick="toggleMenu(this)"></i>
+                            <ul class="menu-options">
+                                <li onclick="editPost()">แก้ไข</li>
+                                <li onclick="deletePost()">ลบ</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <p><strong>ชื่องาน:</strong> <span id="displayJobTitle"></span></p>
+                    <p><strong>รายละเอียด:</strong> <span id="displayJobDescription"></span></p>
+                    <p><strong>สถานที่:</strong> <span id="displayJobLocation"></span></p>
+                    <p><strong>อาคาร:</strong> <span id="displayJobBuilding"></span></p>
+                    <p><strong>ห้อง:</strong> <span id="displayJobRoom"></span></p>
+                    <p><strong>เวลาที่เริ่ม:</strong> <span id="displayJobTimeStart"></span></p>
+                    <p><strong>เวลาที่สิ้นสุด:</strong> <span id="displayJobTimeEnd"></span></p>
+                    <p><strong>จำนวนที่รับ:</strong> <span id="displayCount"></span></p>
+                    <p><strong>จำนวนสำรอง:</strong> <span id="displayReserveCount"></span></p>
+                    <p><strong>การเดินทาง:</strong> <span id="displayTravelingType"></span></p>
+                    <p><strong>อาหาร:</strong> <span id="displayFoodSup"></span></p>
+                    <p><strong>ค่าตอบแทน:</strong> <span id="displaySalary"></span></p>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        // Retrieve data from localStorage and display it on the page
+        document.getElementById('displayProfName').textContent = localStorage.getItem('ProfName') || 'N/A';
+        document.getElementById('displayProfEmail').textContent = localStorage.getItem('ProfEmail') || 'N/A';
+        document.getElementById('displayProfPhone').textContent = localStorage.getItem('ProfPhone') || 'N/A';
+        document.getElementById('displayProfFaculty').textContent = localStorage.getItem('Prof_Faculty') || 'N/A';
+
+        document.getElementById('displayJobTitle').textContent = localStorage.getItem('Job_title') || 'N/A';
+        document.getElementById('displayJobDescription').textContent = localStorage.getItem('Job_description') || 'N/A';
+        document.getElementById('displayJobLocation').textContent = localStorage.getItem('Job_location') || 'N/A';
+        document.getElementById('displayJobBuilding').textContent = localStorage.getItem('Job_building') || 'N/A';
+        document.getElementById('displayJobRoom').textContent = localStorage.getItem('Job_room') || 'N/A';
+        document.getElementById('displayJobTimeStart').textContent = localStorage.getItem('Job_time_start') || 'N/A';
+        document.getElementById('displayJobTimeEnd').textContent = localStorage.getItem('Job_time_end') || 'N/A';
+        document.getElementById('displayCount').textContent = localStorage.getItem('Count') || 'N/A';
+        document.getElementById('displayReserveCount').textContent = localStorage.getItem('Reserve_count') || 'N/A';
+        document.getElementById('displayTravelingType').textContent = localStorage.getItem('Traveling_type') || 'N/A';
+        document.getElementById('displayFoodSup').textContent = localStorage.getItem('Food_Sup') || 'N/A';
+        document.getElementById('displaySalary').textContent = localStorage.getItem('Salary') || 'N/A';
+
+        function toggleMenu(icon) {
+            const menu = icon.nextElementSibling;
+            if (menu.style.display === 'block') {
+                menu.style.display = 'none';
+            } else {
+                menu.style.display = 'block';
+            }
+        }
+
+        async function editPost() {
+            const postId = localStorage.getItem('PostId');
+            if (postId) {
+                const updatedJobTitle = prompt("Enter new Job Title:", document.getElementById('displayJobTitle').textContent);
+                const updatedJobDescription = prompt("Enter new Job Description:", document.getElementById('displayJobDescription').textContent);
+                // Continue with other fields...
+
+                try {
+                    const response = await fetch(`http://localhost:3005/api/postStu/edit`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id: postId,
+                            Job_title: updatedJobTitle,
+                            Job_description: updatedJobDescription,
+                            // Continue with other fields...
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error updating post');
+                    }
+
+                    alert('โพสต์ถูกแก้ไขแล้ว');
+                    location.reload(); // Reload the page to see the updated post
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('ไม่สามารถแก้ไขโพสต์ได้');
+                }
+            } else {
+                alert('ไม่พบ Post ID');
+            }
+        }
+
+        async function deletePost() {
+            const postId = localStorage.getItem('PostId');
+            if (postId && confirm("คุณต้องการลบโพสต์นี้ใช่หรือไม่?")) {
+                try {
+                    const response = await fetch(`http://localhost:3005/api/postStu/delete`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            id: postId
+                        }),
+                    });
+
+                    if (!response.ok) {
+                        throw new Error('Error deleting post');
+                    }
+
+                    alert('โพสต์ถูกลบแล้ว');
+                    location.reload(); // Reload the page to see the updated posts
+
+                } catch (error) {
+                    console.error('Error:', error);
+                    alert('ไม่สามารถลบโพสต์ได้');
+                }
+            } else {
+                alert('ไม่พบ Post ID หรือยืนยันการลบไม่ได้');
+            }
+        }
+    </script>
+</body>
+
+</html>

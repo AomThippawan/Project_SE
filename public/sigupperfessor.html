@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Account</title>
+  <link rel="stylesheet" href="style/signupstd_pfs.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="background">
+      <img src="assets/thaksinlogo.jpg" alt="background">
+    </div>
+
+    <div class="form-container">
+      <form id="createAccountForm">
+        <h1>CREATE ACCOUNT!</h1>
+
+        <div class="input-group">
+          <input type="text" id="ProfName" placeholder="ชื่อ-นามสกุล" required>
+        </div>
+
+        <div class="input-group">
+          <input type="text" id="Username" placeholder="ชื่อผู้ใช่" required>
+        </div>
+
+        <div class="input-group">
+          <input type="password" id="Password" placeholder="รหัสผ่าน" required>
+        </div>
+
+        <div class="input-group">
+          <input type="email" id="ProfEmail" placeholder="email@tsu.ac.th" required>
+        </div>
+
+        <div class="input-group">
+          <input type="tel" id="ProfPhone" placeholder="เบอร์โทรศัพท์" required>
+        </div>
+
+        <div class="input-group">
+          <select id="Prof_Faculty">
+            <option value="">เลือกคณะ</option>
+            <option value="คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล">คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล</option>
+            <option value="คณะวิทยาการสุขภาพและการกีฬา">คณะวิทยาการสุขภาพและการกีฬา</option>
+            <option value="คณะเทคโนโลยีและการพัฒนาชุมชน">คณะเทคโนโลยีและการพัฒนาชุมชน</option>
+            <option value="คณะวิศวกรรมศาสตร์">คณะวิศวกรรมศาสตร์</option>
+            <option value="คณะพยาบาลศาสตร์">คณะพยาบาลศาสตร์</option>
+            <option value="คณะนิติศาสตร์">คณะนิติศาสตร์</option>
+            <option value="คณะอุตสาหกรรมเกษตรและชีวภาพ">คณะอุตสาหกรรมเกษตรและชีวภาพ</option>
+            <option value="คณะศึกษาศาสตร์">คณะศึกษาศาสตร์</option>
+            <option value="คณะสหวิทยาการและการประกอบการ">คณะสหวิทยาการและการประกอบการ</option>
+          </select>
+        </div>
+
+        <div class="button-group">
+          <button type="button" onclick="goBack()">ย้อนกลับ</button>
+          <button type="submit">สมัคร</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('createAccountForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const ProfName = document.getElementById('ProfName').value;
+      const ProfEmail = document.getElementById('ProfEmail').value;
+      const Username = document.getElementById('Username').value;
+      const ProfPhone = document.getElementById('ProfPhone').value;
+      const Password = document.getElementById('Password').value;
+      const Prof_Faculty = document.getElementById('Prof_Faculty').value;
+
+      if (ProfName && ProfEmail && Username && ProfPhone && Password && Prof_Faculty) {
+        try {
+          const response = await fetch('http://localhost:3005/api/prof/register', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ ProfName, ProfEmail, Username, ProfPhone, Password, Prof_Faculty }),
+          });
+
+          const data = await response.json();
+
+          if (!response.ok) {
+            console.error('Server Error:', data);
+            alert('Error registering user: ' + data.message);
+          } else {
+            // เก็บ ProfId และข้อมูลอื่น ๆ ลงใน localStorage
+            localStorage.setItem('ProfId', data.ProfId);
+            localStorage.setItem('ProfName', ProfName);
+            localStorage.setItem('ProfEmail', ProfEmail);
+            localStorage.setItem('ProfPhone', ProfPhone); 
+            localStorage.setItem('Prof_Faculty', Prof_Faculty);
+            
+            alert('User registered successfully!');
+            window.location.href = 'webperfessor.html'; // Redirect on success
+          }
+        } catch (error) {
+          console.error('Fetch Error:', error);
+          alert('Error: ' + error.message);
+        }
+      } else {
+        alert('กรุณากรอกข้อมูลให้ครบถ้วน');
+      }
+    });
+
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</body>
+
+</html>

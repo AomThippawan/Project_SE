@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <link rel="stylesheet" href="style/login.css">
+</head>
+
+<body>
+  <div class="container">
+    <div class="background">
+      <img src="assets/thaksin.jpg" alt="background">
+    </div>
+    <div class="form-container">
+      <form id="loginForm" class="login-form">
+        <h1>LOGIN</h1>
+        <div class="input-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" name="username" required>
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="input-group">
+          <select id="userType" name="userType">
+            <option value="prof">Professor</option>
+            <option value="stu">Student</option>
+          </select>
+        </div>
+        <div class="remember-me">
+          <input type="checkbox" id="remember" name="remember">
+          <label for="remember">Remember Username</label>
+        </div>
+        <button type="submit">Login</button>
+        <div class="links">
+          <a href="forgetpsw.html">Forget Username or Password?</a>
+          <a href="signup.html">Sign Up</a>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function (event) {
+      event.preventDefault();
+
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const userType = document.getElementById('userType').value;
+
+      const apiEndpoint = userType === 'prof' ? 'http://localhost:3005/api/prof/login' : 'http://localhost:3005/api/stu/login';
+
+      try {
+        const response = await fetch(apiEndpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ Username: username, Password: password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log('Login successful:', data);
+
+          // Store user data and access token
+          localStorage.setItem('AccessToken', data.AccessToken);
+          if (userType === 'prof') {
+            localStorage.setItem('ProfId', data.ProfId);
+          } else {
+            localStorage.setItem('StuId', data.StuId);
+            console.log(localStorage.getItem('StuId'));
+          }
+
+          alert('Login successful!');
+          const redirectUrl = userType === 'prof' ? 'webperfessor.html' : 'webstudent.html';
+          window.location.href = redirectUrl;
+        } else {
+          console.error('Login failed:', data);
+          alert('Login failed: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error during login:', error);
+        alert('An error occurred. Please try again.');
+      }
+    });
+  </script>
+</body>
+
+</html>

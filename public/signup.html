@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Role</title>
+  <!-- <link rel="stylesheet" href="signup.css"> -->
+  <link rel="stylesheet" href="style/signup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="background">
+      <img src="assets/thaksinlogo.jpg" alt="background">
+    </div>
+    <div class="form-container">
+      <form class="role-form">
+        <h1>WHO ARE YOU?</h1>
+        <div class="input-group">
+          <label>
+            <input type="radio" name="role" value="student" required>
+            นิสิต
+          </label>
+        </div>
+        <div class="input-group">
+          <label>
+            <input type="radio" name="role" value="teacher" required>
+            อาจารย์/หน่วยงาน
+          </label>
+        </div>
+        <button type="submit">ยืนยัน</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    document.querySelector('.role-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const selectedRole = document.querySelector('input[name="role"]:checked');
+      if (selectedRole) {
+        if (selectedRole.value === 'student') {
+          window.location.href = 'singupstudent.html'; // ลิงก์ไปยังหน้าสำหรับนิสิต
+        } else if (selectedRole.value === 'teacher') {
+          window.location.href = 'sigupperfessor.html'; // ลิงก์ไปยังหน้าสำหรับอาจารย์
+        }
+      } else {
+        alert('กรุณาเลือกบทบาทก่อน');
+      }
+    });
+  </script>
+</body>
+</html>
