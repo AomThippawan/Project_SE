@@ -84,7 +84,8 @@
 
                 const studentName = localStorage.getItem('Name');
                 const studentEmail = localStorage.getItem('Email');
-
+                const profname = localStorage.getItem('ProfName');
+                const profemail = localStorage.getItem('ProfEmail');
                 posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
                 posts.forEach(post => {
@@ -96,6 +97,8 @@
                             <div class="post-box-header">
                                 <p>${post.applyJob || 0} / ${post.Count}</p>
                             </div>
+                            <h3>ชื่อ: ${profname}</h3>
+                            <p>อีเมล: ${profemail}</p>
                             <h3>${post.Job_title}</h3>
                             <p>${post.Job_description}</p>
                             <div class="post-location">
