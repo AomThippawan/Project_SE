@@ -7,44 +7,6 @@
     <title>หน้าโพสต์</title>
     <link rel="stylesheet" href="/public/style/pfstd_pfs.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        /* ปรับ CSS สำหรับโพสต์ */
-        .post-box {
-            position: relative;
-            /* ทำให้ปุ่มสามารถจัดตำแหน่งได้อย่างอิสระ */
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #f9f9f9;
-        }
-
-        .post-header {
-            margin-bottom: 10px;
-        }
-
-        .post-actions {
-            display: flex;
-            justify-content: flex-end;
-            gap: 10px;
-            margin-top: 10px;
-        }
-
-        .post-actions button {
-            background: #007bff;
-            /* สีพื้นหลังของปุ่ม */
-            color: white;
-            /* สีของข้อความปุ่ม */
-            border: none;
-            border-radius: 4px;
-            padding: 5px 10px;
-            cursor: pointer;
-        }
-
-        .post-actions button:hover {
-            background: #0056b3;
-            /* เปลี่ยนสีเมื่อชี้เมาส์ */
-        }
-    </style>
 </head>
 
 <body>
@@ -81,15 +43,19 @@
             <div class="post-box">
                 <div class="post-header">
                     <h3>Post Details</h3>
+                    <div class="post-actions">
+                        <button onclick="editPost()" class="edit-btn"><i class="fas fa-edit"></i></button>
+                        <button onclick="deletePost()" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                    </div>
                 </div>
                 <p><strong>Skill:</strong> <span id="studentskill"></span></p>
                 <p><strong>Ability:</strong> <span id="studentability"></span></p>
                 <p><strong>Worktime:</strong> <span id="studentworktime"></span></p>
                 <span id="postId" style="display:none;"></span> <!-- เพิ่มที่นี่ -->
-                <div class="post-actions">
+                <!-- <div class="post-actions">
                     <button onclick="editPost()">แก้ไข</button>
                     <button onclick="deletePost()">ลบ</button>
-                </div>
+                </div> -->
             </div>
         </div>
     </main>
