@@ -10,7 +10,6 @@
 </head>
 
 <body>
-    <!-- แถบด้านบน -->
     <header class="header">
         <div class="logo">
             <a href="/public/webprofessor.html">
@@ -24,65 +23,103 @@
         </div>
     </header>
 
-    <!-- Section to display user information -->
     <main class="main-content">
-        <div class="student-name">
-            <h2>ข้อมูลผู้ใช้</h2>
-            <p><strong>ชื่อ-นามสกุล:</strong> <span id="displayProfName"></span></p>
+        <div class="professor-info">
+            <h2>ข้อมูลอาจารย์</h2>
+            <p><strong>ชื่อ-นามสกุล:</strong> <span id="profName"></span></p>
         </div>
         <div class="info-container">
             <div class="user-info">
-                <p><strong>Email:</strong> <span id="displayProfEmail"></span></p>
-                <p><strong>เบอร์โทรศัพท์:</strong> <span id="displayProfPhone"></span></p>
-                <p><strong>คณะ:</strong> <span id="displayProfFaculty"></span></p>
+                <h2>รายละเอียดอาจารย์</h2>
+                <p><strong>Email:</strong> <span id="profEmail"></span></p>
+                <p><strong>เบอร์โทรศัพท์:</strong> <span id="profPhone"></span></p>
+                <p><strong>คณะ:</strong> <span id="profFaculty"></span></p>
             </div>
 
-            <!-- แสดงโพสต์ของอาจารย์ทั้งหมด -->
             <div id="post-container"></div>
+
+            <div id="edit-post-container" style="display: none;">
+                <h3>แก้ไขโพสต์</h3>
+                <form id="edit-post-form">
+                    <label for="edit-job-title">ตำแหน่งงาน:</label>
+                    <input type="text" id="edit-job-title" name="Job_title" required>
+
+                    <label for="edit-job-description">รายละเอียด:</label>
+                    <textarea id="edit-job-description" name="Job_description" required></textarea>
+
+                    <label for="edit-job-location">สถานที่:</label>
+                    <input type="text" id="edit-job-location" name="Job_location">
+
+                    <label for="edit-job-building">อาคาร:</label>
+                    <input type="text" id="edit-job-building" name="Job_building">
+
+                    <label for="edit-job-room">ห้อง:</label>
+                    <input type="text" id="edit-job-room" name="Job_room">
+
+                    <label for="edit-job-time-start">เวลาที่เริ่ม:</label>
+                    <input type="text" id="edit-job-time-start" name="Job_time_start">
+
+                    <label for="edit-job-time-end">เวลาที่สิ้นสุด:</label>
+                    <input type="text" id="edit-job-time-end" name="Job_time_end">
+
+                    <label for="edit-job-Count">จำนวนที่รับ:</label>
+                    <input type="number" id="edit-job-Count" name="Count">
+
+                    <label for="edit-job-Reserve-count">จำนวนสำรอง:</label>
+                    <input type="number" id="edit-job-Reserve-count" name="Reserve_count">
+
+                    <label for="edit-job-Traveling-type">การเดินทาง:</label>
+                    <input type="text" id="edit-job-Traveling-type" name="Traveling_type">
+
+                    <label for="edit-job-Food-Sup">อาหาร:</label>
+                    <input type="text" id="edit-job-Food-Sup" name="Food_Sup">
+
+                    <label for="edit-job-Salary">ค่าตอบแทน:</label>
+                    <input type="text" id="edit-job-Salary" name="Salary">
+
+                    <input type="hidden" id="edit-post-id">
+                    <button type="button" onclick="updatePost()">อัปเดตโพสต์</button>
+                </form>
+            </div>
         </div>
     </main>
 
-    <!-- ฟอร์มสำหรับการแก้ไขโพสต์ (ซ่อนไว้ก่อน) -->
-    <div id="edit-post-form" style="display:none;">
-        <h3>แก้ไขโพสต์</h3>
-        <form id="edit-post-form-content">
-            <input type="hidden" id="edit-post-id" />
-            <label for="edit-job-title">ตำแหน่งงาน:</label>
-            <input type="text" id="edit-job-title" required />
-            <label for="edit-job-description">รายละเอียด:</label>
-            <textarea id="edit-job-description" required></textarea>
-            <!-- เพิ่มฟิลด์อื่นๆ ตามที่ต้องการ -->
-            <button type="submit">บันทึกการเปลี่ยนแปลง</button>
-            <button type="button" onclick="closeEditForm()">ยกเลิก</button>
-        </form>
-    </div>
-
     <script>
-        // แสดงข้อมูลผู้ใช้จาก localStorage
-        document.getElementById('displayProfName').textContent = localStorage.getItem('ProfName') || 'N/A';
-        document.getElementById('displayProfEmail').textContent = localStorage.getItem('ProfEmail') || 'N/A';
-        document.getElementById('displayProfPhone').textContent = localStorage.getItem('ProfPhone') || 'N/A';
-        document.getElementById('displayProfFaculty').textContent = localStorage.getItem('Prof_Faculty') || 'N/A';
+        // เรียกข้อมูลจาก localStorage เพื่อแสดงข้อมูลอาจารย์
+        const profName = localStorage.getItem('ProfName');
+        const profEmail = localStorage.getItem('ProfEmail');
+        const profPhone = localStorage.getItem('ProfPhone');
+        const profFaculty = localStorage.getItem('Prof_Faculty');
 
-        // ฟังก์ชันดึงโพสต์ทั้งหมดของอาจารย์จาก API
-        async function fetchProfessorPosts() {
+        document.getElementById('profName').textContent = profName ? profName : 'N/A';
+        document.getElementById('profEmail').textContent = profEmail ? profEmail : 'N/A';
+        document.getElementById('profPhone').textContent = profPhone ? profPhone : 'N/A';
+        document.getElementById('profFaculty').textContent = profFaculty ? profFaculty : 'N/A';
+
+        // ฟังก์ชันเรียกข้อมูลโพสต์ทั้งหมดจากเซิร์ฟเวอร์
+        async function fetchPosts() {
             try {
                 const response = await fetch('http://localhost:3005/api/postProf');
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const posts = await response.json();
+
                 const postContainer = document.getElementById('post-container');
-                postContainer.innerHTML = ''; // เคลียร์ container ก่อนแสดงโพสต์ใหม่
+                postContainer.innerHTML = '';
 
                 posts.forEach(post => {
                     const postElement = document.createElement('div');
                     postElement.classList.add('post-box');
                     postElement.innerHTML = `
                         <div class="post-header">
-                            <h3>${post.Job_title}</h3>
+                            <h3>รายละเอียดโพสต์</h3>
                             <div class="post-actions">
                                 <button onclick="editPost('${post._id}')" class="edit-btn"><i class="fas fa-edit"></i></button>
                                 <button onclick="deletePost('${post._id}')" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
                             </div>
                         </div>
+                        <p><strong>ตำแหน่งงาน:</strong> ${post.Job_title}</p>
                         <p><strong>รายละเอียด:</strong> ${post.Job_description}</p>
                         <p><strong>สถานที่:</strong> ${post.Job_location}</p>
                         <p><strong>อาคาร:</strong> ${post.Job_building}</p>
@@ -97,6 +134,7 @@
                     `;
                     postContainer.appendChild(postElement);
                 });
+
             } catch (error) {
                 console.error('Error fetching posts:', error);
                 alert('ไม่สามารถดึงโพสต์ได้');
@@ -105,38 +143,37 @@
 
         // ฟังก์ชันแก้ไขโพสต์
         async function editPost(postId) {
-            // โหลดข้อมูลโพสต์ที่ต้องการแก้ไข
             try {
                 const response = await fetch(`http://localhost:3005/api/postProf/${postId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
                 const post = await response.json();
 
-                // แสดงฟอร์มแก้ไขและกรอกข้อมูลโพสต์ที่โหลด
                 document.getElementById('edit-post-id').value = post._id;
-                document.getElementById('edit-job-title').value = post.Job_title;
-                document.getElementById('edit-job-description').value = post.Job_description;
-                document.getElementById('edit-job-location').value = post.Job_location;
-                document.getElementById('edit-job-building').value = post.Job_building;
-                document.getElementById('edit-job-room').value = post.Job_room;
-                document.getElementById('edit-job-time-start').value = post.Job_time_start;
-                document.getElementById('edit-job-time-end').value = post.Job_time_end;
-                document.getElementById('edit-job-Count').value = post.Count;
-                document.getElementById('edit-job-Reserve-count').value = post.Reserve_count;
-                document.getElementById('edit-job-Traveling-type').value = post.Traveling_type;
-                document.getElementById('edit-job-Food-Sup').value = post.Food_Sup;
-                document.getElementById('edit-job-Salary').value = post.Salary;
+                document.getElementById('edit-job-title').value = post.Job_title || '';
+                document.getElementById('edit-job-description').value = post.Job_description || '';
+                document.getElementById('edit-job-location').value = post.Job_location || '';
+                document.getElementById('edit-job-building').value = post.Job_building || '';
+                document.getElementById('edit-job-room').value = post.Job_room || '';
+                document.getElementById('edit-job-time-start').value = post.Job_time_start || '';
+                document.getElementById('edit-job-time-end').value = post.Job_time_end || '';
+                document.getElementById('edit-job-Count').value = post.Count || '';
+                document.getElementById('edit-job-Reserve-count').value = post.Reserve_count || '';
+                document.getElementById('edit-job-Traveling-type').value = post.Traveling_type || '';
+                document.getElementById('edit-job-Food-Sup').value = post.Food_Sup || '';
+                document.getElementById('edit-job-Salary').value = post.Salary || '';
 
-                // กรอกข้อมูลฟิลด์อื่นๆ ที่ต้องการ
+                document.getElementById('edit-post-container').style.display = 'block';
 
-                document.getElementById('edit-post-form').style.display = 'block';
             } catch (error) {
-                console.error('Error fetching post:', error);
+                console.error('Error fetching post for edit:', error);
                 alert('ไม่สามารถดึงข้อมูลโพสต์ได้');
             }
         }
 
-        document.getElementById('edit-post-form-content').addEventListener('submit', async (event) => {
-            event.preventDefault(); // ป้องกันการรีเฟรชหน้า
-
+        // ฟังก์ชันอัปเดตโพสต์
+        async function updatePost() {
             const postId = document.getElementById('edit-post-id').value;
             const updatedPost = {
                 Job_title: document.getElementById('edit-job-title').value,
@@ -146,8 +183,8 @@
                 Job_room: document.getElementById('edit-job-room').value,
                 Job_time_start: document.getElementById('edit-job-time-start').value,
                 Job_time_end: document.getElementById('edit-job-time-end').value,
-                Count: document.getElementById('edit-job-Count').value,
-                Reserve_count: document.getElementById('edit-job-Reserve-count').value,
+                Count: parseInt(document.getElementById('edit-job-Count').value, 10) || 0,
+                Reserve_count: parseInt(document.getElementById('edit-job-Reserve-count').value, 10) || 0,
                 Traveling_type: document.getElementById('edit-job-Traveling-type').value,
                 Food_Sup: document.getElementById('edit-job-Food-Sup').value,
                 Salary: document.getElementById('edit-job-Salary').value
@@ -157,43 +194,54 @@
                 const response = await fetch(`http://localhost:3005/api/postProf/update/${postId}`, {
                     method: 'PUT',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(updatedPost)
+                    body: JSON.stringify(updatedPost),
                 });
 
-                const result = await response.json();
-                alert('โพสต์ได้รับการแก้ไขแล้ว');
-                fetchProfessorPosts(); // รีเฟรชโพสต์ทั้งหมด
-                closeEditForm(); // ปิดฟอร์มแก้ไข
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Error updating post: ${response.status}, ${errorText}`);
+                }
+
+                alert('โพสต์ถูกอัปเดตแล้ว');
+                document.getElementById('edit-post-container').style.display = 'none';
+                fetchPosts(); // โหลดโพสต์ใหม่อีกครั้ง
+
             } catch (error) {
-                console.error('Error updating post:', error);
-                alert('ไม่สามารถแก้ไขโพสต์ได้');
+                console.error('Error:', error);
+                alert('ไม่สามารถอัปเดตโพสต์ได้');
             }
-        });
-        function closeEditForm() {
-            document.getElementById('edit-post-form').style.display = 'none';
         }
 
         // ฟังก์ชันลบโพสต์
         async function deletePost(postId) {
-            if (confirm('คุณแน่ใจว่าต้องการลบโพสต์นี้?')) {
+            if (confirm("คุณต้องการลบโพสต์นี้ใช่หรือไม่?")) {
                 try {
-                    await fetch(`http://localhost:3005/api/postProf/delete/${postId}`, {
-                        method: 'DELETE'
+                    const response = await fetch(`http://localhost:3005/api/postProf/delete/${postId}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
                     });
 
-                    alert('โพสต์ถูกลบเรียบร้อยแล้ว');
-                    fetchProfessorPosts(); // รีเฟรชโพสต์ทั้งหมด
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        throw new Error(`Error deleting post: ${response.status}, ${errorText}`);
+                    }
+
+                    alert('โพสต์ถูกลบแล้ว');
+                    fetchPosts(); // โหลดโพสต์ใหม่อีกครั้ง
+
                 } catch (error) {
-                    console.error('Error deleting post:', error);
+                    console.error('Error:', error);
                     alert('ไม่สามารถลบโพสต์ได้');
                 }
             }
         }
 
-        // โหลดโพสต์ของอาจารย์เมื่อหน้าเว็บโหลดเสร็จ
-        document.addEventListener('DOMContentLoaded', fetchProfessorPosts);
+        // เรียกฟังก์ชัน fetchPosts เมื่อโหลดหน้าเสร็จ
+        document.addEventListener('DOMContentLoaded', fetchPosts);
     </script>
 </body>
 

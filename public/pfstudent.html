@@ -168,28 +168,28 @@
 
         // ฟังก์ชันลบโพสต์
         async function deletePost(postId) {
-            if (confirm("คุณต้องการลบโพสต์นี้ใช่หรือไม่?")) {
-                try {
-                    const response = await fetch(`http://localhost:3005/api/postStu/delete/${postId}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                    });
+    if (confirm("คุณต้องการลบโพสต์นี้ใช่หรือไม่?")) {
+        try {
+            const response = await fetch(`http://localhost:3005/api/postStu/delete/${postId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
 
-                    if (!response.ok) {
-                        throw new Error('Error deleting post');
-                    }
-
-                    alert('โพสต์ถูกลบแล้ว');
-                    fetchPosts(); // โหลดโพสต์ใหม่อีกครั้ง
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('ไม่สามารถลบโพสต์ได้');
-                }
+            if (!response.ok) {
+                throw new Error('Error deleting post');
             }
+
+            alert('โพสต์ถูกลบแล้ว');
+            fetchPosts(); // โหลดโพสต์ใหม่อีกครั้ง
+
+        } catch (error) {
+            console.error('Error:', error);
+            alert('ไม่สามารถลบโพสต์ได้');
         }
+    }
+}
 
         // เรียก fetchPosts เมื่อหน้าเว็บโหลดเสร็จ
         document.addEventListener('DOMContentLoaded', fetchPosts);

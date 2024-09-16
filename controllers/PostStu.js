@@ -56,7 +56,13 @@ exports.editPostStu = async (req, res) => {
 };
 exports.deletePostStu = async (req, res) => {
     try {
-        const { id } = req.body;
+        const id = req.params.id;
+
+        // ตรวจสอบว่า ID เป็น ObjectId ที่ถูกต้องหรือไม่
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: 'Invalid Post ID' });
+        }
+
         const post = await Post.findById(id);
 
         if (!post) return res.status(404).json({ message: 'Post not found!' });
@@ -66,10 +72,10 @@ exports.deletePostStu = async (req, res) => {
         res.json({ message: 'Post deleted!' });
 
     } catch (error) {
+        console.error('Error deleting post:', error); // ดีบักข้อผิดพลาด
         res.status(500).json({ message: error.message });
     }
 };
-
 exports.getPostStu = async (req, res) => {
     try {
         // ดึงข้อมูลโพสต์ทั้งหมดจากฐานข้อมูล
