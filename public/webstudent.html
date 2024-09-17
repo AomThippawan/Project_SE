@@ -19,7 +19,7 @@
         </div>
         <div class="account-icon">
             <a href="/public/pfstudent.html">
-                <i class="fas fa-user-circle"></i> <!-- ใช้ไอคอนที่ต้องการ -->
+                <i class="fas fa-user-circle"></i>
             </a>
         </div>
     </header>
@@ -33,7 +33,7 @@
             </div>
 
             <!-- เพิ่มส่วนที่แสดงโพสต์ทั้งหมด -->
-            <div id="posts-container"></div> <!-- Container สำหรับโพสต์ -->
+            <div id="posts-container"></div>
         </main>
 
         <!-- การกรองโพสต์ -->
@@ -41,7 +41,15 @@
             <h3>การกรองโพสต์</h3>
             <select id="filter-faculty">
                 <option value="">เลือกคณะ</option>
-                <!-- รายการคณะ -->
+                <option value="คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล">คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล</option>
+                <option value="คณะวิทยาการสุขภาพและการกีฬา">คณะวิทยาการสุขภาพและการกีฬา</option>
+                <option value="คณะเทคโนโลยีและการพัฒนาชุมชน">คณะเทคโนโลยีและการพัฒนาชุมชน</option>
+                <option value="คณะวิศวกรรมศาสตร์">คณะวิศวกรรมศาสตร์</option>
+                <option value="คณะพยาบาลศาสตร์">คณะพยาบาลศาสตร์</option>
+                <option value="คณะนิติศาสตร์">คณะนิติศาสตร์</option>
+                <option value="คณะอุตสาหกรรมเกษตรและชีวภาพ">คณะอุตสาหกรรมเกษตรและชีวภาพ</option>
+                <option value="คณะศึกษาศาสตร์">คณะศึกษาศาสตร์</option>
+                <option value="คณะสหวิทยาการและการประกอบการ">คณะสหวิทยาการและการประกอบการ</option>
             </select>
 
             <select id="filter-major">
@@ -50,7 +58,8 @@
             </select>
         </aside>
     </div>
-    <script src="scriptss.js"></script> <!-- ใส่ path ที่ถูกต้องสำหรับไฟล์ JavaScript -->
+
+    <script src="scriptss.js"></script>
     <script>
         async function fetchPosts() {
             try {
@@ -59,7 +68,9 @@
                     throw new Error('Error fetching posts');
                 }
                 const posts = await response.json();
+                console.log('Posts fetched:', posts); // ตรวจสอบข้อมูลที่ดึงมา
                 const postsContainer = document.getElementById('posts-container');
+                const filterLocation = document.getElementById('filter-location');
 
                 postsContainer.innerHTML = '';
 
@@ -67,18 +78,25 @@
                 const studentEmail = localStorage.getItem('Email');
                 const profname = localStorage.getItem('ProfName');
                 const profemail = localStorage.getItem('ProfEmail');
+
+                console.log('LocalStorage values:', {
+                    studentName,
+                    studentEmail,
+                    profname,
+                    profemail
+                });
+
                 posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
                 posts.forEach(post => {
-                    // สร้าง element ของโพสต์
+                    console.log('Post data:', post); // ตรวจสอบข้อมูลโพสต์
+
                     const postElement = document.createElement('div');
                     postElement.className = 'post-item';
-                    postElement.setAttribute('data-post-id', post._id); // เพิ่ม data attribute
+                    postElement.setAttribute('data-post-id', post._id);
 
-                    // คำนวณสถานะปุ่มสมัคร
                     const applyButtonDisabled = post.applyJob >= post.Count ? 'disabled' : '';
 
-                    // กำหนดเนื้อหาของโพสต์
                     postElement.innerHTML = `
                 <div class="post-box">
                     <div class="post-box-header">
@@ -101,14 +119,12 @@
                 </div>
             `;
 
-                    // เพิ่มโพสต์ลงใน container
                     postsContainer.appendChild(postElement);
                 });
             } catch (error) {
                 console.error('Error:', error);
             }
         }
-
 
         async function apply(postId) {
             const studentName = localStorage.getItem('Name');
@@ -138,17 +154,17 @@
                 }
 
                 const result = await response.json();
-                console.log('Apply result:', result); // ตรวจสอบผลลัพธ์
+                console.log('Apply result:', result);
                 alert(result.message);
 
-                // อัปเดตเฉพาะโพสต์ที่ถูกสมัคร
-                updatePost(postId);
+                updatePost(postId); // เรียกใช้ updatePost เพื่ออัปเดต UI
 
             } catch (error) {
                 console.error('Error:', error);
                 alert('Failed to apply for job: ' + error.message);
             }
         }
+
         async function updatePost(postId) {
             try {
                 const response = await fetch(`http://localhost:3005/api/postProf/${postId}`);
@@ -156,13 +172,13 @@
                     throw new Error('Error fetching post');
                 }
                 const post = await response.json();
-                console.log('Updated post data:', post); // ตรวจสอบข้อมูลที่ได้รับ
+                console.log('Updated post data:', post);
 
                 const postElement = document.querySelector(`div[data-post-id="${postId}"]`);
                 if (postElement) {
                     const postBoxHeader = postElement.querySelector('.post-box-header p');
-                    postBoxHeader.textContent = `${post.applyJob} / ${post.Count}`; // อัปเดตจำนวนผู้สมัคร
-                    console.log('Updated textContent:', postBoxHeader.textContent); // ตรวจสอบค่า
+                    postBoxHeader.textContent = `${post.applyJob} / ${post.Count}`;
+                    console.log('Updated textContent:', postBoxHeader.textContent);
                 } else {
                     console.error('Post element not found');
                 }
@@ -171,9 +187,9 @@
             }
         }
 
+
         window.onload = fetchPosts;
     </script>
-
 </body>
 
 </html>

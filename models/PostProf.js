@@ -13,6 +13,7 @@ const PostProfSchema = new mongoose.Schema({
     Traveling_type: { type: String },
     Food_Sup: { type: String },
     Salary: { type: String }
+    
 }, { 
     timestamps: true, 
     versionKey: false 

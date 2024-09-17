@@ -18,6 +18,7 @@ router.get("/:id", async (req, res) => {
         const id = req.params.id;
         const post = await PostProf.findById(id);
 
+
         if (!post) return res.status(404).json({ message: 'Post not found!' });
 
         res.json(post);
@@ -26,4 +27,15 @@ router.get("/:id", async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// router.get('/user/:userId', async (req, res) => {
+//     const { userId } = req.params;
+
+//     try {
+//         const posts = await PostProf.find({ ProfId: userId }); // ใช้ ProfId หรือ userId ตามที่กำหนด
+//         res.status(200).json(posts);
+//     } catch (error) {
+//         res.status(500).json({ message: error.message });
+//     }
+// });
 module.exports = router;

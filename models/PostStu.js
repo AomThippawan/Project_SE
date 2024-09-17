@@ -17,3 +17,4 @@ PostStuSchema.set('toJSON', { virtuals: true });
 PostStuSchema.set('toObject', { virtuals: true });
 
 module.exports = mongoose.model('PostStu', PostStuSchema);
+
