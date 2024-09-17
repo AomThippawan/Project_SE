@@ -40,8 +40,7 @@ body, html {
     box-sizing: border-box;
     padding: 0;
 }
-
-.student-name {
+.professor-info ,.student-name {
     width: 100%;
     background-color: #f5f5f5;
     padding: 10px;
@@ -52,6 +51,7 @@ body, html {
     display: flex;
     width: 100%;
     border: none;
+    margin-top: 20px; 
 }
 
 .user-info {
@@ -63,12 +63,14 @@ body, html {
     box-shadow: none;
 }
 
+/* แก้กล่องโพสต์ */
 .post-container {
-    width: 75%; 
+    width: 80%; 
     display: flex;
     flex-direction: column; /* เรียงแนวตั้ง */
     gap: 10px; /* ช่องว่างระหว่างกล่อง */
-    padding: 10px;
+    padding: 20px;
+    
 }
 
 .post-box {
@@ -105,7 +107,38 @@ body, html {
     color: #007bff;
 }
 
+/* แก้กล่องแก้ไข */
+#edit-post-container {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
 
+#edit-post-form label {
+    display: block;
+    margin-top: 10px;
+}
+
+#edit-post-form input {
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+#edit-post-form button {
+    background-color: #81b4dd;
+    color: white;
+    padding: 10px;
+    border: none;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+}
 /* .kebab-menu {
     position: absolute;
     top: 10px; 

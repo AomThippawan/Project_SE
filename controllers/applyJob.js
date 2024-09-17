@@ -24,6 +24,10 @@ exports.applyJob = async (req, res) => {
             PostId
         });
         await apply.save();
+
+        // post.Count += 1; // เพิ่มจำนวนผู้สมัคร
+        // await post.save();
+
         await PostProf.findByIdAndUpdate(PostId, { $inc: { Count: 1 } });
         res.status(200).json({ message: 'Applied successfully' });
 

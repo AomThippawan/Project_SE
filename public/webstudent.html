@@ -41,32 +41,13 @@
             <h3>การกรองโพสต์</h3>
             <select id="filter-faculty">
                 <option value="">เลือกคณะ</option>
-                <option value="คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล">คณะวิทยาศาสตร์และนวัตกรรมดิจิทัล</option>
-                <option value="คณะวิทยาการสุขภาพและการกีฬา">คณะวิทยาการสุขภาพและการกีฬา</option>
-                <option value="คณะเทคโนโลยีและการพัฒนาชุมชน">คณะเทคโนโลยีและการพัฒนาชุมชน</option>
-                <option value="คณะวิศวกรรมศาสตร์">คณะวิศวกรรมศาสตร์</option>
-                <option value="คณะพยาบาลศาสตร์">คณะพยาบาลศาสตร์</option>
-                <option value="คณะนิติศาสตร์">คณะนิติศาสตร์</option>
-                <option value="คณะอุตสาหกรรมเกษตรและชีวภาพ">คณะอุตสาหกรรมเกษตรและชีวภาพ</option>
-                <option value="คณะศึกษาศาสตร์">คณะศึกษาศาสตร์</option>
-                <option value="คณะสหวิทยาการและการประกอบการ">คณะสหวิทยาการและการประกอบการ</option>
+                <!-- รายการคณะ -->
             </select>
 
             <select id="filter-major">
                 <option value="">เลือกสาขา</option>
                 <!-- สาขาจะถูกเพิ่มโดย JavaScript -->
             </select>
-
-            <!-- <select id="filter-agency">
-                <option value="">เลือกหน่วยงาน</option>
-                <option value="หน่วยงานอิสระ">หน่วยงานอิสระ</option>
-                <option value="สำนักงานสภามหาวิทยาลัย">สำนักงานสภามหาวิทยาลัย</option>
-                <option value="สำนักงานมหาวิทยาลัย">สำนักงานมหาวิทยาลัย</option>
-                <option value="สำนักงานวิทยาเขต">สำนักงานวิทยาเขต</option>
-                <option value="ส่วนงานอื่นๆ">ส่วนงานอื่นๆ</option>
-                <option value="องค์กร/โครงการ/กิจกรรม">องค์กร/โครงการ/กิจกรรม</option>
-                <option value="เว็บไซต์หน่วยงานเดิม">เว็บไซต์หน่วยงานเดิม</option>
-            </select> -->
         </aside>
     </div>
     <script src="scriptss.js"></script> <!-- ใส่ path ที่ถูกต้องสำหรับไฟล์ JavaScript -->
@@ -89,30 +70,38 @@
                 posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
                 posts.forEach(post => {
+                    // สร้าง element ของโพสต์
                     const postElement = document.createElement('div');
                     postElement.className = 'post-item';
+                    postElement.setAttribute('data-post-id', post._id); // เพิ่ม data attribute
 
+                    // คำนวณสถานะปุ่มสมัคร
+                    const applyButtonDisabled = post.applyJob >= post.Count ? 'disabled' : '';
+
+                    // กำหนดเนื้อหาของโพสต์
                     postElement.innerHTML = `
-                        <div class="post-box">
-                            <div class="post-box-header">
-                                <p>${post.applyJob || 0} / ${post.Count}</p>
-                            </div>
-                            <h3>ชื่อ: ${profname}</h3>
-                            <p>อีเมล: ${profemail}</p>
-                            <h3>${post.Job_title}</h3>
-                            <p>${post.Job_description}</p>
-                            <div class="post-location">
-                                <p><strong>สถานที่:</strong> ${post.Job_location} ${post.Job_building ? ' อาคาร: ' + post.Job_building : ''} ${post.Job_room ? ' ห้อง: ' + post.Job_room : ''}</p>
-                            </div>
-                            <div class="post-time">
-                                <p><strong>เวลา:</strong> ${post.Job_time_start} - ${post.Job_time_end}</p>
-                            </div>
-                            <div class="post-salary">
-                                <p><strong>ค่าตอบแทน:</strong> ${post.Salary}</p>
-                            </div>
-                            <button class="post-button" onclick="apply('${post._id}')">สมัคร</button>
-                        </div>
-                    `;
+                <div class="post-box">
+                    <div class="post-box-header">
+                        <p>${post.applyJob || 0} / ${post.Count}</p>
+                    </div>
+                    <h3>ชื่อ: ${profname}</h3>
+                    <p>อีเมล: ${profemail}</p>
+                    <h3>${post.Job_title}</h3>
+                    <p>${post.Job_description}</p>
+                    <div class="post-location">
+                        <p><strong>สถานที่:</strong> ${post.Job_location} ${post.Job_building ? ' อาคาร: ' + post.Job_building : ''} ${post.Job_room ? ' ห้อง: ' + post.Job_room : ''}</p>
+                    </div>
+                    <div class="post-time">
+                        <p><strong>เวลา:</strong> ${post.Job_time_start} - ${post.Job_time_end}</p>
+                    </div>
+                    <div class="post-salary">
+                        <p><strong>ค่าตอบแทน:</strong> ${post.Salary}</p>
+                    </div>
+                    <button class="post-button" onclick="apply('${post._id}')" ${applyButtonDisabled}>สมัคร</button>
+                </div>
+            `;
+
+                    // เพิ่มโพสต์ลงใน container
                     postsContainer.appendChild(postElement);
                 });
             } catch (error) {
@@ -120,9 +109,15 @@
             }
         }
 
+
         async function apply(postId) {
-            const studentName = localStorage.getItem('Name'); // ใช้ข้อมูลของนิสิต
+            const studentName = localStorage.getItem('Name');
             const studentEmail = localStorage.getItem('Email');
+
+            if (!studentName || !studentEmail) {
+                alert('ข้อมูลนักเรียนไม่ครบถ้วน กรุณาลงชื่อเข้าใช้อีกครั้ง');
+                return;
+            }
 
             try {
                 const response = await fetch('http://localhost:3005/api/applyJob/apply', {
@@ -130,19 +125,49 @@
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify({ StudentName: studentName, StudentEmail: studentEmail, PostId: postId }),
+                    body: JSON.stringify({
+                        StudentName: studentName,
+                        StudentEmail: studentEmail,
+                        PostId: postId
+                    }),
                 });
 
                 if (!response.ok) {
-                    throw new Error('Error applying for job');
+                    const errorText = await response.text();
+                    throw new Error(`Error applying for job: ${errorText}`);
                 }
 
                 const result = await response.json();
+                console.log('Apply result:', result); // ตรวจสอบผลลัพธ์
                 alert(result.message);
+
+                // อัปเดตเฉพาะโพสต์ที่ถูกสมัคร
+                updatePost(postId);
 
             } catch (error) {
                 console.error('Error:', error);
-                alert('Failed to apply for job');
+                alert('Failed to apply for job: ' + error.message);
+            }
+        }
+        async function updatePost(postId) {
+            try {
+                const response = await fetch(`http://localhost:3005/api/postProf/${postId}`);
+                if (!response.ok) {
+                    throw new Error('Error fetching post');
+                }
+                const post = await response.json();
+                console.log('Updated post data:', post); // ตรวจสอบข้อมูลที่ได้รับ
+
+                const postElement = document.querySelector(`div[data-post-id="${postId}"]`);
+                if (postElement) {
+                    const postBoxHeader = postElement.querySelector('.post-box-header p');
+                    postBoxHeader.textContent = `${post.applyJob} / ${post.Count}`; // อัปเดตจำนวนผู้สมัคร
+                    console.log('Updated textContent:', postBoxHeader.textContent); // ตรวจสอบค่า
+                } else {
+                    console.error('Post element not found');
+                }
+            } catch (error) {
+                console.error('Error:', error);
             }
         }
 

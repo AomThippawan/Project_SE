@@ -19,7 +19,7 @@
         </div>
         <div class="account-icon">
             <a href="/public/pfstudent.html">
-                <i class="fas fa-user-circle"></i> <!-- ใช้ไอคอนที่ต้องการ -->
+                <i class="fas fa-user-circle"></i>
             </a>
         </div>
     </header>
@@ -40,27 +40,32 @@
                 <p><strong>Sex:</strong> <span id="studentSex"></span></p>
                 <p><strong>Year of Study:</strong> <span id="studentYearOfStudy"></span></p>
             </div>
-            <div class="post-box">
-                <div class="post-header">
-                    <h3>Post Details</h3>
-                    <div class="post-actions">
-                        <button onclick="editPost()" class="edit-btn"><i class="fas fa-edit"></i></button>
-                        <button onclick="deletePost()" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
-                    </div>
-                </div>
-                <p><strong>Skill:</strong> <span id="studentskill"></span></p>
-                <p><strong>Ability:</strong> <span id="studentability"></span></p>
-                <p><strong>Worktime:</strong> <span id="studentworktime"></span></p>
-                <span id="postId" style="display:none;"></span> <!-- เพิ่มที่นี่ -->
-                <!-- <div class="post-actions">
-                    <button onclick="editPost()">แก้ไข</button>
-                    <button onclick="deletePost()">ลบ</button>
-                </div> -->
+
+            <!-- Container สำหรับแสดงโพสต์ทั้งหมด -->
+            <div id="post-container"></div>
+
+            <!-- Container สำหรับฟอร์มแก้ไขโพสต์ -->
+            <div id="edit-post-container" style="display: none;">
+                <h3>Edit Post</h3>
+                <form id="edit-post-form">
+                    <label for="edit-St_skill">Skill:</label>
+                    <input type="text" id="edit-St_skill" name="St_skill" required>
+
+                    <label for="edit-St_ability">Ability:</label>
+                    <input type="text" id="edit-St_ability" name="St_ability" required>
+
+                    <label for="edit-St_work_time">Work Time:</label>
+                    <input type="text" id="edit-St_work_time" name="St_work_time" required>
+
+                    <input type="hidden" id="edit-post-id">
+                    <button type="button" onclick="updatePost()">Update Post</button>
+                </form>
             </div>
         </div>
     </main>
+
     <script>
-        // Retrieve student information from localStorage
+        // เรียกข้อมูลจาก localStorage เพื่อแสดงข้อมูลนิสิต
         const studentName = localStorage.getItem('Name');
         const studentEmail = localStorage.getItem('Email');
         const studentPhone = localStorage.getItem('Phone');
@@ -69,11 +74,6 @@
         const studentSex = localStorage.getItem('Sex');
         const studentYearOfStudy = localStorage.getItem('Year_of_study');
 
-        const studentskill = localStorage.getItem('St_skill');
-        const studentability = localStorage.getItem('St_ability');
-        const studentworktime = localStorage.getItem('St_work_time');
-
-        // Display the student information in the respective HTML elements
         document.getElementById('studentName').textContent = studentName ? studentName : 'N/A';
         document.getElementById('studentEmail').textContent = studentEmail ? studentEmail : 'N/A';
         document.getElementById('studentPhone').textContent = studentPhone ? studentPhone : 'N/A';
@@ -82,62 +82,101 @@
         document.getElementById('studentSex').textContent = studentSex ? studentSex : 'N/A';
         document.getElementById('studentYearOfStudy').textContent = studentYearOfStudy ? studentYearOfStudy : 'N/A';
 
-        document.getElementById('studentskill').textContent = studentskill ? studentskill : 'N/A';
-        document.getElementById('studentability').textContent = studentability ? studentability : 'N/A';
-        document.getElementById('studentworktime').textContent = studentworktime ? studentworktime : 'N/A';
+        // ฟังก์ชันเรียกข้อมูลโพสต์ทั้งหมดจากเซิร์ฟเวอร์
+        async function fetchPosts() {
+            try {
+                const response = await fetch('http://localhost:3005/api/postStu');
+                const posts = await response.json();
 
+                posts.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                
+                const postContainer = document.getElementById('post-container');
+                postContainer.innerHTML = '';
 
-        // Retrieve post information from localStorage
-        const postId = localStorage.getItem('PostId'); // Assuming you store the Post ID in localStorage when selecting a post
+                posts.forEach(post => {
+                    const postElement = document.createElement('div');
+                    postElement.classList.add('post-box');
+                    postElement.innerHTML = `
+                        <div class="post-header">
+                            <h3>Post Details</h3>
+                            <div class="post-actions">
+                                <button onclick="editPost('${post._id}')" class="edit-btn"><i class="fas fa-edit"></i></button>
+                                <button onclick="deletePost('${post._id}')" class="delete-btn"><i class="fas fa-trash-alt"></i></button>
+                            </div>
+                        </div>
+                        <p><strong>Skill:</strong> ${post.St_skill}</p>
+                        <p><strong>Ability:</strong> ${post.St_ability}</p>
+                        <p><strong>Worktime:</strong> ${post.St_work_time}</p>
+                    `;
+                    postContainer.appendChild(postElement);
+                });
 
-        async function editPost() {
-            if (postId) {
-                const updatedSkill = prompt("Enter new Skill:");
-                const updatedAbility = prompt("Enter new Ability:");
-                const updatedWorktime = prompt("Enter new Worktime:");
-
-                try {
-                    const response = await fetch(`http://localhost:3005/api/postStu/edit`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({
-                            id: postId,
-                            St_skill: updatedSkill,
-                            St_ability: updatedAbility,
-                            St_work_time: updatedWorktime
-                        }),
-                    });
-
-                    if (!response.ok) {
-                        throw new Error('Error updating post');
-                    }
-
-                    const result = await response.json();
-                    alert('โพสต์ถูกแก้ไขแล้ว');
-                    location.reload(); // Reload the page to see the updated post
-
-                } catch (error) {
-                    console.error('Error:', error);
-                    alert('ไม่สามารถแก้ไขโพสต์ได้');
-                }
-            } else {
-                alert('ไม่พบ Post ID');
+            } catch (error) {
+                console.error('Error fetching posts:', error);
+                alert('ไม่สามารถดึงโพสต์ได้');
             }
         }
 
-        async function deletePost() {
-            if (postId && confirm("คุณต้องการลบโพสต์นี้ใช่หรือไม่?")) {
+        // ฟังก์ชันแก้ไขโพสต์
+        async function editPost(postId) {
+            try {
+                const response = await fetch(`http://localhost:3005/api/postStu/${postId}`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const post = await response.json();
+
+                document.getElementById('edit-post-id').value = post._id;
+                document.getElementById('edit-St_skill').value = post.St_skill;
+                document.getElementById('edit-St_ability').value = post.St_ability;
+                document.getElementById('edit-St_work_time').value = post.St_work_time;
+                document.getElementById('edit-post-container').style.display = 'block';
+
+            } catch (error) {
+                console.error('Error fetching post for edit:', error);
+                alert('ไม่สามารถดึงข้อมูลโพสต์ได้');
+            }
+        }
+
+        // ฟังก์ชันอัปเดตโพสต์
+        async function updatePost() {
+            const postId = document.getElementById('edit-post-id').value;
+            const St_skill = document.getElementById('edit-St_skill').value;
+            const St_ability = document.getElementById('edit-St_ability').value;
+            const St_work_time = document.getElementById('edit-St_work_time').value;
+
+            try {
+                const response = await fetch(`http://localhost:3005/api/postStu/update/${postId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ St_skill, St_ability, St_work_time }),
+                });
+
+                if (!response.ok) {
+                    throw new Error('Error updating post');
+                }
+
+                alert('โพสต์ถูกอัปเดตแล้ว');
+                document.getElementById('edit-post-container').style.display = 'none';
+                fetchPosts(); // โหลดโพสต์ใหม่อีกครั้ง
+
+            } catch (error) {
+                console.error('Error:', error);
+                alert('ไม่สามารถอัปเดตโพสต์ได้');
+            }
+        }
+
+        // ฟังก์ชันลบโพสต์
+        async function deletePost(postId) {
+            if (confirm("คุณต้องการลบโพสต์นี้ใช่หรือไม่?")) {
                 try {
-                    const response = await fetch(`http://localhost:3005/api/postStu/delete`, {
-                        method: 'POST',
+                    const response = await fetch(`http://localhost:3005/api/postStu/delete/${postId}`, {
+                        method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',
                         },
-                        body: JSON.stringify({
-                            id: postId
-                        }),
                     });
 
                     if (!response.ok) {
@@ -145,16 +184,17 @@
                     }
 
                     alert('โพสต์ถูกลบแล้ว');
-                    location.reload(); // Reload the page to see the updated posts
+                    fetchPosts(); // โหลดโพสต์ใหม่อีกครั้ง
 
                 } catch (error) {
                     console.error('Error:', error);
                     alert('ไม่สามารถลบโพสต์ได้');
                 }
-            } else {
-                alert('ไม่พบ Post ID หรือยืนยันการลบไม่ได้');
             }
         }
+
+        // เรียก fetchPosts เมื่อหน้าเว็บโหลดเสร็จ
+        document.addEventListener('DOMContentLoaded', fetchPosts);
     </script>
 </body>
 
